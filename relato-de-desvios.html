@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relato de Desvios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, textarea {
+            width: 300px;
+            padding: 8px;
+            margin-top: 5px;
+        }
+
+        button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .names-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .name-item {
+            width: 90%;
+            padding: 10px;
+            background-color: #f4f4f4;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .name-item input {
+            margin-left: 10px;
+            width: 100px;
+        }
+
+        .navigation {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .navigation button {
+            margin: 5px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .navigation button:hover {
+            background-color: #0b7dda;
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <button onclick="window.location.href='index.html'">Tela Inicial</button>
+    </div>
+
+    <h1>Relato de Desvios</h1>
+    <form id="deviation-form">
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="name" required>
+
+        <button type="submit">Adicionar Nome</button>
+    </form>
+
+    <div class="names-list" id="names-list"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('deviation-form');
+            const namesList = document.getElementById('names-list');
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const name = form.name.value;
+
+                const person = {
+                    name,
+                    number: ''
+                };
+
+                addNameToList(person);
+                form.reset();
+                saveNames();
+            });
+
+            function addNameToList(person) {
+                const listItem = document.createElement('div');
+                listItem.className = 'name-item';
+
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = person.name;
+
+                const numberInput = document.createElement('input');
+                numberInput.type = 'text';
+                numberInput.value = person.number;
+                numberInput.addEventListener('input', () => {
+                    person.number = numberInput.value;
+                    saveNames();
+                });
+
+                listItem.appendChild(nameSpan);
+                listItem.appendChild(numberInput);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Apagar';
+                deleteButton.addEventListener('click', () => {
+                    listItem.remove();
+                    saveNames();
+                });
+                listItem.appendChild(deleteButton);
+
+                namesList.appendChild(listItem);
+            }
+
+            function saveNames() {
+                const names = [];
+
+                namesList.querySelectorAll('.name-item').forEach(item => {
+                    const name = item.querySelector('span').textContent;
+                    const number = item.querySelector('input').value;
+                    names.push({ name, number });
+                });
+
+                localStorage.setItem('names', JSON.stringify(names));
+            }
+
+            function loadNames() {
+                const savedNames = localStorage.getItem('names');
+                if (savedNames) {
+                    const names = JSON.parse(savedNames);
+                    namesList.innerHTML = '';
+                    names.forEach(person => addNameToList(person));
+                }
+            }
+
+            loadNames(); // Carregar os dados ao iniciar a página
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; /* Remove margens do body */
+            padding: 0; /* Remove padding do body */
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .navigation {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .navigation button {
+            margin: 5px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 15px;
+        }
+
+        .navigation button:hover {
+            background-color: #0b7dda;
+        }
+
+        .items-list {
+            width: 90%;
+            margin: 0 auto;
+            padding: 0; /* Remove padding */
+            list-style-type: none; /* Remove bullet points */
+        }
+
+        .item {
+            display: flex;
+            justify-content: flex-start; /* Alinha itens à esquerda */
+            align-items: center;
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .item span {
+            margin-right: 10px; /* Espaço entre o texto e os checkboxes */
+        }
+
+        .checkboxes {
+            display: flex;
+            align-items: center;
+        }
+
+        .item-checkbox {
+            margin-right: 5px; /* Espaço entre os checkboxes */
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <button onclick="window.location.href='index.html'">Tela Inicial</button>
+        <button onclick="window.location.href='relato_de_desvios.html'">Relato de Desvios</button>
+        <button onclick="window.location.href='dds.html'">DDS</button>
+    </div>
+
+    <h1>DDS</h1>
+
+    <ul class="items-list" id="items-list">
+        <li class="item">
+            <span>Relato de Desvios</span>
+            <div class="checkboxes">
+                <input type="checkbox" class="item-checkbox" id="relato-desvios-1" data-id="relato-desvios-1"> 
+                <input type="checkbox" class="item-checkbox" id="relato-desvios-2" data-id="relato-desvios-2"> 
+            </div>
+        </li>
+        <li class="item">
+            <span>Ara, Check list, limpeza e organização</span>
+            <div class="checkboxes">
+                <input type="checkbox" class="item-checkbox" id="ara-checklist-1" data-id="ara-checklist-1">
+                <input type="checkbox" class="item-checkbox" id="ara-checklist-2" data-id="ara-checklist-2">
+            </div>
+        </li>
+        <li class="item">
+            <span>Normas e Procedimentos</span>
+            <div class="checkboxes">
+                <input type="checkbox" class="item-checkbox" id="normas-procedimentos-1" data-id="normas-procedimentos-1">
+                <input type="checkbox" class="item-checkbox" id="normas-procedimentos-2" data-id="normas-procedimentos-2">
+            </div>
+        </li>
+        <li class="item">
+            <span>Recusa de Tarefa</span>
+            <div class="checkboxes">
+                <input type="checkbox" class="item-checkbox" id="recusa-tarefa-1" data-id="recusa-tarefa-1">
+                <input type="checkbox" class="item-checkbox" id="recusa-tarefa-2" data-id="recusa-tarefa-2"> 
+            </div>
+        </li>
+        <li class="item">
+            <span>Tópico SafeStart</span>
+            <div class="checkboxes">
+                <input type="checkbox" class="item-checkbox" id="topico-safestart-1" data-id="topico-safestart-1">
+                <input type="checkbox" class="item-checkbox" id="topico-safestart-2" data-id="topico-safestart-2">
+            </div>
+        </li>
+    </ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const itemsList = document.getElementById('items-list');
+
+            function saveItems() {
+                const items = [];
+                itemsList.querySelectorAll('.item').forEach(item => {
+                    const checkboxes = item.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        items.push({ id: checkbox.dataset.id, checked: checkbox.checked });
+                    });
+                });
+                localStorage.setItem('dds-items', JSON.stringify(items));
+            }
+
+            function loadItems() {
+                const savedItems = localStorage.getItem('dds-items');
+                if (savedItems) {
+                    const items = JSON.parse(savedItems);
+                    items.forEach(item => {
+                        const checkbox = document.querySelector(`.item-checkbox[data-id="${item.id}"]`);
+                        if (checkbox) {
+                            checkbox.checked = item.checked;
+                        }
+                    });
+                }
+            }
+
+            document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', saveItems);
+            });
+
+            loadItems(); // Carregar os dados ao iniciar a página
+        });
+    </script>
+</body>
+</html>
